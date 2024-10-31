@@ -5,15 +5,17 @@ import shutil
 import pkg_resources
 import sys
 
-def enforce():
+def enforce(commit_type: str):
     githooks_path = pkg_resources.resource_filename(
-        __name__, "hooks/commit-msg")
+        __name__, f"hooks/commit-msg{commit_type}")
     user_repository = os.path.join(os.getcwd(), ".git/hooks")
 
-    if os.path.exists(user_repository+"/commit-msg"):
+    if not os.path.exists(githooks_path):
+        print("this config not support with commit-msg hook")
+    elif os.path.exists(user_repository+"/commit-msg"):
         print("your repo already enforced with commit-msg hook")
     else:
-        shutil.copy(githooks_path, user_repository)
+        shutil.copy(githooks_path, user_repository + '/commit-msg')
         st = os.stat(user_repository + '/commit-msg')
         os.chmod(user_repository + '/commit-msg', st.st_mode | stat.S_IEXEC)
         print("Your Repo has been enforced with git commit-msg hook")
@@ -42,7 +44,11 @@ def main():
     else:
         if len(sys.argv) > 1 :
             if sys.argv[1] == "install":
-                enforce()
+                if len(sys.argv) > 2 :
+                    enforce(commit_type=sys.argv[2])
+                else:
+                    enforce(commit_type="")
+                
             elif sys.argv[1] == "remove":
                 unenforce()
             else:
@@ -51,7 +57,7 @@ def main():
                 print("commit-linter remove ==> will remove hooks from your repo")
         else:
             print("enforcing by default")
-            enforce()
+            enforce(commit_type="")
 
 
 if __name__ == "__main__":
