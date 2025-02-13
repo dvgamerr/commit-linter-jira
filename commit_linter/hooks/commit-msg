@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env .venv\python
 import re, sys, os
 
 examples = """fix: navbar not responsive on mobile
@@ -50,16 +50,20 @@ def main():
         )
         sys.exit(1)
     else:
-        commitPrefix = ss.split(":")[0]
-        commitPostfix = ss.split(":", 1)[1]
-        if "(" in commitPrefix:
-            commitEmojie = emojies.get(commitPrefix.split("(")[0].split("/")[1])
-            newCommit = open(filename, "w")
-            newCommit.write(commitPrefix + ": " + commitEmojie + commitPostfix)
+        commit_prefix = ss.split(":")[0]
+        commit_postfix = ss.split(":", 1)[1]
+        if re.search(r":\w+?:", commit_postfix):
+            sys.exit(0)
+            
+        if "(" in commit_prefix:
+            commit_emojie = emojies.get(commit_prefix.split("(")[0].split("/")[1])
+            new_commit = open(filename, "w")
+            new_commit.write(commit_prefix + ": " + commit_emojie + commit_postfix)
         else:
-            commitEmojie = emojies.get(commitPrefix.split("/")[1])
-            newCommit = open(filename, "w")
-            newCommit.write(commitPrefix + ": " + commitEmojie + commitPostfix)
+            commit_emojie = emojies.get(commit_prefix.split("/")[1])
+            new_commit = open(filename, "w")
+            new_commit.write(commit_prefix + ": " + commit_emojie + commit_postfix)
+    
 
 
 if __name__ == "__main__":
