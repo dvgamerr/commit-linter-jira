@@ -58,11 +58,11 @@ def main():
         if "(" in commit_prefix:
             commit_emojie = emojies.get(commit_prefix.split("(")[0].split("/")[1])
             new_commit = open(filename, "w")
-            new_commit.write(commit_prefix + ": " + commit_emojie + commit_postfix)
+            new_commit.write(commit_prefix + ": " + (commit_emojie or "") + commit_postfix)
         else:
             commit_emojie = emojies.get(commit_prefix.split("/")[1])
             new_commit = open(filename, "w")
-            new_commit.write(commit_prefix + ": " + commit_emojie + commit_postfix)
+            new_commit.write(commit_prefix + ": " + (commit_emojie or "") + commit_postfix)
     
 
 
